@@ -24,14 +24,14 @@ insert into users (username, secret, role) values ('user@gmail.com', '$2a$10$m3J
 insert into users (username, secret, role) values ('admin@gmail.com', '$2a$10$GovzvMHKM2X7aSUGQN/8TuG6gcKm9pxltuUWJajjX2ZYpxXCNNfaa', 'admin');
 
 insert into carts (user_id, total) values (1, 0);
-insert into cart_lines (cart_id, product_id, qty) values (1, 3, 10);
-insert into cart_lines (cart_id, product_id, qty) values (1, 2, 10);
 insert into cart_lines (cart_id, product_id, qty) values (1, 1, 10);
+insert into cart_lines (cart_id, product_id, qty) values (1, 2, 10);
+insert into cart_lines (cart_id, product_id, qty) values (1, 3, 10);
 
 insert into carts (user_id, total) values (2, 0);
-insert into cart_lines (cart_id, product_id, qty) values (2, 6, 20);
-insert into cart_lines (cart_id, product_id, qty) values (2, 5, 20);
 insert into cart_lines (cart_id, product_id, qty) values (2, 4, 20);
+insert into cart_lines (cart_id, product_id, qty) values (2, 5, 20);
+insert into cart_lines (cart_id, product_id, qty) values (2, 6, 20);
 
 
 

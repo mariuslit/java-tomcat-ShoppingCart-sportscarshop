@@ -37,7 +37,6 @@ $(function () {
 
     // [Buy]
     $('#mar-buyButton').click(function () {
-        alert("vartotojo krepseli bandoma issaugoti DB");
         keepUserCartInDatabase()
     });
 
@@ -61,7 +60,6 @@ $(function () {
 function printProducts(skip, rowsPerPage) {
 
     var token = window.localStorage.token;
-    console.log('token=' + token);
 
     $.ajax({
         url: 'api/product/list',
@@ -131,8 +129,7 @@ function bildHtmlProductsRows(products, rowsPerPage) {
 // CART ----------------------------------------------------------------------------------------------------------------
 function jamam(productId, productName) {
 
-    // var productId = product.id;
-    console.log("paspausta prekė " + productId);
+    // console.log("paspausta prekė " + productId);
 
     // 1 idedama preke i krepseli
     $.ajax({
@@ -176,7 +173,7 @@ function printCart() {
 
         bildHtmlCartRows(cart);
 
-    }).fail(function (jrXHR) {
+    }).fail(function () {
 
         console.log("fail Product List error");
     });
@@ -196,7 +193,7 @@ function bildHtmlCartRows(cart) {
         var cartLineQty = cartLines[i].qty;
         var product = cartLines[i].product;
 
-        console.log('  cartLineId=' + cartLineId + ', cartLineQty=' + cartLineQty + ', product.name=' + product.name);
+        // console.log('  cartLineId=' + cartLineId + ', cartLineQty=' + cartLineQty + ', product.name=' + product.name);
 
         html += addHtmlCartRow(cartLineId, cartLineQty, product);
     }

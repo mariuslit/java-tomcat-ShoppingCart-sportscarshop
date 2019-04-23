@@ -37,7 +37,6 @@ $(function () {
 
     // [Buy]
     $('#mar-buyButton').click(function () {
-        alert("vartotojo krepseli bandoma issaugoti DB");
         keepUserCartInDatabase()
     });
 
