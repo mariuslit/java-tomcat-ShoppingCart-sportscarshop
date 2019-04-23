@@ -122,16 +122,10 @@ function jamam(productId) {
 
 function printCart() {
 
-    // var token = window.localStorage.token;
-
-    // gauna cart produktų sarašą
     $.ajax({
         url: 'api/cart/getsessioncart',
         method: 'GET',
-        dataType: 'json',
-        headers: {
-            // Authorization: "Bearer " + token
-        }
+        dataType: 'json'
     }).done(function (cart) {
 
         bildHtmlCartRows(cart);
@@ -202,28 +196,29 @@ function updateCartLine(productId, oldQty) {
         data: {}
     }).done(function () {
         console.log("CartLine atnaujinta")
+    }).fail(function () {
+        console.log("CART LINE NE ATNAUJINTA");
     });
     printCart()
 }
 
 // DELETE --------------------------------------------------------------------------------------------------------------
 function deleteCartLine(productId) {
+
     $.ajax({
         url: 'api/cart/deleteCartLine/' + productId,
         method: 'DELETE',
         dataType: 'json',
-        contentType: 'application/json',
-        data: {}
+        contentType: 'application/json'
     }).done(function () {
         console.log("CartLine istrinta")
+    }).fail(function () {
+        console.log("CART LINE NE ISTRINTA");
     });
     printCart()
 }
 
 // LOGIN ---------------------------------------------------------------------------------------------------------------
-var token = window.localStorage.token;
-var session = window.sessionStorage;
-
 function login(username, password) {
 
     $.ajax({
