@@ -57,7 +57,7 @@ Accept: application/json
 GET http://localhost:8080/sportscarshop/api/cart
 Accept: application/json
 Content-Type: application/json
-Cookie: JSESSIONID=4705A5639185D65213E3AAACF750C981
+#Cookie: JSESSIONID=4705A5639185D65213E3AAACF750C981
 
 ###
 

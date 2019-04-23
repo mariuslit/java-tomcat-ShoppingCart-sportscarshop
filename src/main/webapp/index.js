@@ -43,9 +43,9 @@ $(function () {
     // [Sign In]
     $('#mar-signIn').click(function () {
         $('#mar-loginModal').modal('show');
-    });
 
-    // [Sign In]
+    });
+    // [Sign In - Login button]
     $('#mar-loginButton').click(function () {
         login($('#username').val(), $('#password').val());
     });
@@ -59,14 +59,9 @@ $(function () {
 // PRODUCTS ------------------------------------------------------------------------------------------------------------
 function printProducts(skip, rowsPerPage) {
 
-    var token = window.localStorage.token;
-
     $.ajax({
         url: 'api/product/list',
         method: 'GET',
-        headers: {
-            Authorization: "Bearer " + token
-        },
         dataType: 'json',
         data: {
             size: rowsPerPage + 1,
@@ -74,51 +69,28 @@ function printProducts(skip, rowsPerPage) {
         }
     }).done(function (data) {
 
-        // << >> show/hide
-        // if (skip === 0) $('#prev').hide();
-        // else $('#prev').show();
         if (data.length <= rowsPerPage) $('#next').hide();
         else $('#next').show();
 
         bildHtmlProductsRows(data, rowsPerPage);
 
-    }).fail(function (jrXHR) {
-
-        // kartoti autentifikavimą
-        if (jrXHR.status === 401) {
-
-            console.log("fail Product List error " + jrXHR.status);
-
-            $('#mar-loginButton').click(function () {
-                login($('#username').val(), $('#password').val());
-            });
-
-            $('#mar-loginModal').modal('show');
-
-        } else {
-            console.log("fail Product List eror " + jrXHR.status);
-        }
+    }).fail(function () {
+        console.log("PRODUKTAI NEATSPAUSDINTI");
     });
 }
 
 function bildHtmlProductsRows(products, rowsPerPage) {
 
     var html = '';
-
     for (var i = 0; i < Math.min(products.length, rowsPerPage); i++) {
 
-        var productId = products[i].id;
-        var productName = products[i].name;
-        var productPrice = products[i].price.toLocaleString();
-        var productImage = products[i].image;
-
         html += '<tr class="ml-product">';
-        html += ' <td class="text-right"><img src="' + productImage + '" alt="Responsive image" class="img-fluid" /></td>';
-        html += ' <td>' + productName + '</td>';
-        html += ' <td class="text-right">' + productPrice + '</td>';
+        html += ' <td class="text-right"><img src="' + products[i].image + '" alt="Responsive image" class="img-fluid" /></td>';
+        html += ' <td>' + products[i].name + '</td>';
+        html += ' <td class="text-right">' + products[i].price.toLocaleString() + '</td>';
         html += ' <td class="text-right">';
         html += '  <a href="#" class="nav-link btn btn-info btn-sm ml-add-krepselisX" ' +
-            'onclick="jamam(' + productId + ', \'' + productName + '\')">';
+            'onclick="jamam(' + products[i].id + ')">';
         html += '   <span class="glyphicon glyphicon-shopping-cart"></span> Add to Cart</a>';
         html += ' </td>';
         html += '</tr>';
@@ -127,13 +99,11 @@ function bildHtmlProductsRows(products, rowsPerPage) {
 }
 
 // CART ----------------------------------------------------------------------------------------------------------------
-function jamam(productId, productName) {
+function jamam(productId) {
 
-    // console.log("paspausta prekė " + productId);
-
-    // 1 idedama preke i krepseli
+    // dedama į 1 krepseli
     $.ajax({
-        url: 'api/cart/add', // dedama į 1 krepseli
+        url: 'api/cart/add',
         method: 'POST',
         dataType: 'json',
         contentType: 'application/json',
@@ -142,61 +112,45 @@ function jamam(productId, productName) {
             qty: 1
         })
     }).done(function () {
-        console.log("prekė " + productId + " įdėta į krepšį");
 
-        // 2 atspausdinamos visos krepselio prekes
         printCart();
-        // alert('Prekė įdėta į krepšelį:\n    product.name=' + productName);
 
     }).fail(function () {
-
-        console.log('neįdėta į krepšelį');
+        console.log('PREKE NE ĮDĖTA Į KREPŠELĮ');
     });
 }
 
 function printCart() {
-    // console.log('spausdinamos cart prekės');
-    // console.log('skip=' + skip + ' row=' + rowsPerPage);
 
-    var token = window.localStorage.token;
+    // var token = window.localStorage.token;
 
     // gauna cart produktų sarašą
     $.ajax({
-        url: 'api/cart',
+        url: 'api/cart/getsessioncart',
         method: 'GET',
         dataType: 'json',
         headers: {
-            Authorization: "Bearer " + token
+            // Authorization: "Bearer " + token
         }
     }).done(function (cart) {
-        // console.log("ajax data.lenght=" + cart.cartLines.length);
 
         bildHtmlCartRows(cart);
 
     }).fail(function () {
-
-        console.log("fail Product List error");
+        console.log("CART NEATSPAUSDINTA");
     });
 }
 
 function bildHtmlCartRows(cart) {
-    // console.log("bildHtmlCartRows");
 
     var cartLines = cart.cartLines;
-
-    console.log("  cartLines.lenght=" + cartLines.length);
 
     var html = '';
     for (var i = 0; i < cartLines.length; i++) {
 
-        var cartLineId = cartLines[i].id;
-        var cartLineQty = cartLines[i].qty;
-        var product = cartLines[i].product;
-
-        // console.log('  cartLineId=' + cartLineId + ', cartLineQty=' + cartLineQty + ', product.name=' + product.name);
-
-        html += addHtmlCartRow(cartLineId, cartLineQty, product);
+        html += addHtmlCartRow(cartLines[i].id, cartLines[i].qty, cartLines[i].product);
     }
+
     $('#mar-cartListTbody').html(html);
     $('#mar-totalSum').html(cart.totalSum.toLocaleString());
     $('#mar-totalSumRespons').html(cart.totalSum.toLocaleString());
@@ -206,10 +160,6 @@ function bildHtmlCartRows(cart) {
 
         var oldQty = Number($(this).closest('tr').find('input')[0].value);
         var productId = Number($(this).closest('tr').find('td')[0].innerHTML);
-
-        console.log('productId=' + productId);
-        console.log('oldQty=' + oldQty);
-
         updateCartLine(productId, oldQty);
 
     });
@@ -218,12 +168,10 @@ function bildHtmlCartRows(cart) {
 function addHtmlCartRow(cartLineId, cartLineQty, product) {
 
     var html = '<tr>';
-    // html += ' <td data-th=""></td>';
     html += ' <td class="mar-invisible mar-cartLineProductId">' + product.id + '</td>';
     html += ' <td data-th="Product">';
     html += '   <div class="row">';
-    // <img src="http://placehold.it/1" alt="..." class="img-responsive"/>
-    html += '     <div class="col-sm-2 hidden-xs"><img src="' + product.image + '"  alt="..." class="img-fluid"/></div>'; // picture place
+    html += '     <div class="col-sm-2 hidden-xs"><img src="' + product.image + '"  alt="..." class="img-fluid"/></div>';
     html += '     <div class="col-sm-10">';
     html += '       <h4 class="nomargin">' + product.name + '</h4>';
     html += '       <p>Good car!' + '</p>'; // dscription place
@@ -235,11 +183,9 @@ function addHtmlCartRow(cartLineId, cartLineQty, product) {
     html += ' <td data-th="Subtotal" class="text-right">€ ' + (product.price * cartLineQty).toLocaleString() + '</td>';
     html += ' <td class="actions text-right" data-th="">';
     html += '   <button class="btn btn-info btn-sm mar-refreshCartLine"><i class="fa fa-refresh"></i></button>';
-    // html += '   <button class="btn btn-info btn-sm mar-refreshCartLine" ' + 'onclick="updateCartLine2(' + product.id + ', \'' + cartLineId + '\')"><i class="fa fa-refresh"></i></button>';
     html += '   <button class="btn btn-danger btn-sm" ' + 'onclick="deleteCartLine(' + product.id + ')"><i class="fa fa-trash-o"></i></button>';
     html += ' </td>';
     html += '</tr>';
-
     return html;
 }
 
@@ -275,8 +221,8 @@ function deleteCartLine(productId) {
 }
 
 // LOGIN ---------------------------------------------------------------------------------------------------------------
-// var token = window.localStorage.token;
-// var session = window.sessionStorage;
+var token = window.localStorage.token;
+var session = window.sessionStorage;
 
 function login(username, password) {
 
@@ -361,7 +307,7 @@ function keepUserCartInDatabase() {
         dataType: 'json',
         headers: {Authorization: "Bearer " + token}
     }).done(function (userCart) {
-        alert("VARTOTOJO KREPŠELIS ISSAUGOTAS DB");
+        console.log("VARTOTOJO KREPŠELIS ISSAUGOTAS DB");
         console.log("User cart=" + userCart);
 
     }).fail(function () {

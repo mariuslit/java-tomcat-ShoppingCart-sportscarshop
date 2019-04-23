@@ -186,11 +186,12 @@ public class CartService extends BaseService<Cart> {
 
     // gauti cart is session
     @GET
+    @Path("/getsessioncart")
     public Response getCart() {
 
         HttpSession session = servletRequest.getSession();
         Cart cart = (Cart) session.getAttribute("cart");
-        return Response.ok(session.getAttribute("cart")).build();
+        return Response.ok(cart).build();
 
     }
 
