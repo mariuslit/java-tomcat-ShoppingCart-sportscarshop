@@ -17,6 +17,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * User operacijų servisas
+ */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/auth")

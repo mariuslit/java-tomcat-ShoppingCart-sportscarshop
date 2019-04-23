@@ -47,7 +47,7 @@ $(function () {
 
     // [Sign In]
     $('#mar-loginButton').click(function () {
-        login($('#username').val(), $('#password').val(), skip, rowsPerPage);
+        login($('#username').val(), $('#password').val());
     });
 
     // [Sign Out]
@@ -90,7 +90,7 @@ function printProducts(skip, rowsPerPage) {
             console.log("fail Product List error " + jrXHR.status);
 
             $('#mar-loginButton').click(function () {
-                login($('#username').val(), $('#password').val(), skip, rowsPerPage);
+                login($('#username').val(), $('#password').val());
             });
 
             $('#mar-loginModal').modal('show');
@@ -155,7 +155,7 @@ function jamam(productId, productName) {
 }
 
 function printCart() {
-    console.log('spausdinamos cart prekės');
+    // console.log('spausdinamos cart prekės');
     // console.log('skip=' + skip + ' row=' + rowsPerPage);
 
     var token = window.localStorage.token;
@@ -255,8 +255,7 @@ function updateCartLine(productId, oldQty) {
         contentType: 'application/json',
         data: {}
     }).done(function () {
-
-        console.log("produktas: " + productId + " atnaujintas su PUT")
+        console.log("CartLine atnaujinta")
     });
     printCart()
 }
@@ -268,12 +267,9 @@ function deleteCartLine(productId) {
         method: 'DELETE',
         dataType: 'json',
         contentType: 'application/json',
-        data: {
-            // id: productId
-        }
+        data: {}
     }).done(function () {
-        console.log("produktas id=" + productId + " istrintas.")
-
+        console.log("CartLine istrinta")
     });
     printCart()
 }
@@ -282,7 +278,7 @@ function deleteCartLine(productId) {
 // var token = window.localStorage.token;
 // var session = window.sessionStorage;
 
-function login(username, password, skip, rowsPerPage) {
+function login(username, password) {
 
     $.ajax({
         url: 'api/auth/login',
@@ -297,7 +293,7 @@ function login(username, password, skip, rowsPerPage) {
     }).done(function (data) {
         console.log('PRISILOGINTA');
 
-        sinchronizuotiKrepselius();
+        sinchronizuotiKrepselius(username);
 
         window.localStorage.token = data.token;
 
@@ -313,7 +309,7 @@ function login(username, password, skip, rowsPerPage) {
     });
 }
 
-function sinchronizuotiKrepselius() {
+function sinchronizuotiKrepselius(username) {
 
     var token = window.localStorage.token;
 
@@ -324,7 +320,8 @@ function sinchronizuotiKrepselius() {
         dataType: 'json',
         headers: {Authorization: "Bearer " + token}
     }).done(function (userCart) {
-        console.log("KREPŠELIS SINCHRONIZUOTAS");
+
+        alert("Guest KREPŠELIS SINCHRONIZUOTAS su vartotojo\n" + username + '\nkrepšeliu');
         console.log("User cart=" + userCart);
 
     }).fail(function () {

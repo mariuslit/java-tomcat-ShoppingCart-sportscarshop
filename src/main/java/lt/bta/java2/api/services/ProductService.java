@@ -4,6 +4,9 @@ import lt.bta.java2.jpa.entities.Product;
 
 import javax.ws.rs.Path;
 
+/**
+ * Product operacijų servisas
+ */
 @Path("/product")
 public class ProductService extends BaseService<Product> {
 
@@ -12,8 +15,4 @@ public class ProductService extends BaseService<Product> {
         return Product.class;
     }
 
-//    @Override
-//    public Response list(int size, int skip) {
-//        return super.list(size, skip);
-//    }
 }

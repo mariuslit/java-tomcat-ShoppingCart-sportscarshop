@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
+/**
+ * Pekiu krepselio irasu objetas atitinkantis DB lentele
+ */
 @Entity(name = "cart_lines")
 public class CartLine {
 

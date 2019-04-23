@@ -6,6 +6,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 
+/**
+ * Pekes objetas atitinkantis DB lentele
+ */
 @Entity(name = "products")
 public class Product {
 

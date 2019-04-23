@@ -6,6 +6,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Pekiu krepselio objetas atitinkantis DB lentele
+ */
 @Entity(name = "carts")
 @NamedEntityGraph(
         name = Cart.GRAPH_CART_LINES,

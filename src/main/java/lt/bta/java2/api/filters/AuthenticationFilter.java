@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-// Autentifikacijos
+/**
+ * Autorizacijos
+ */
 @Provider
 @Priority(Priorities.AUTHORIZATION)
 public class AuthenticationFilter implements ContainerRequestFilter {

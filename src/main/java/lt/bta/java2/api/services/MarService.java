@@ -16,6 +16,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
+/**
+ * Cart operacijų servisas (su autorizacijomis)
+ */
 @Path("/mar")
 public class MarService extends BaseService<Cart> {
 
@@ -26,22 +29,6 @@ public class MarService extends BaseService<Cart> {
     @Override
     protected Class<Cart> getEntityClass() {
         return Cart.class;
-    }
-
-    // sukurti cart nukaityma kai paduodi kaip id=cartId
-//    @AccessRoles({Role.USER, Role.ADMIN}) // reikalaujama autorizacijos
-    @GET
-    @Path("/getcart/{id}")
-    public Response gautiVienaKrepseli(@PathParam("id") int id) {
-
-        try (Dao<Cart> dao = createDao()) {
-            Cart entity = dao.read(id, Cart.GRAPH_CART_LINES);
-
-            if (entity == null)
-                return Response.status(Response.Status.NOT_FOUND).build();
-
-            return Response.ok(entity).build();
-        }
     }
 
     @AccessRoles({Role.USER, Role.ADMIN})
@@ -64,8 +51,8 @@ public class MarService extends BaseService<Cart> {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        try (Dao<Cart> dao = createDao()) {
-            Cart userCart = dao.read(user.getId(), Cart.GRAPH_CART_LINES);
+        try (Dao<Cart> cartDao = createDao()) {
+            Cart userCart = cartDao.read(user.getId(), Cart.GRAPH_CART_LINES);
 
             if (userCart != null)
                 for (CartLine item : userCart.getCartLines())
@@ -77,11 +64,11 @@ public class MarService extends BaseService<Cart> {
         return Response.ok(sessionCart).build();
     }
 
+    // todo
     @AccessRoles({Role.USER, Role.ADMIN})
     @PUT
     @Path("/keepusercart")
     public Response keepUserCartInDatabase() {
-
 
         HttpSession session = servletRequest.getSession();
 
@@ -98,13 +85,14 @@ public class MarService extends BaseService<Cart> {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        sessionCart.setUser(user);
-        sessionCart.setTotalSum(sessionCart.getTotalSum());
-
         try (Dao<Cart> cartDao = createDao()) {
 
-            sessionCart = cartDao.update(sessionCart);
-            return Response.ok(sessionCart).build();
+            Cart userCart = cartDao.read(user.getId(), Cart.GRAPH_CART_LINES);
+            userCart.setCartLines(sessionCart.getCartLines());
+            userCart.setTotalSum(sessionCart.getTotalSum());
+            userCart = cartDao.update(userCart);
+
+            return Response.ok(userCart).build();
         }
     }
 }

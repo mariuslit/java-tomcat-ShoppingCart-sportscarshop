@@ -4,6 +4,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+/**
+ * Pagalbine klase skirta prisijungimu pului organizuoti
+ */
 public class EntityManagerHelper {
 
     public static final String FETCH_GRAPH = "javax.persistence.fetchgraph";

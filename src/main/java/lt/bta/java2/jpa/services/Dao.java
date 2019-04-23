@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * DAO atsakingas uz rysi su DB ir CRUD operacijas
+ * DAO klase atsakinga uz rysi su DB ir CRUD operacijas
  */
 public class Dao<T> implements AutoCloseable {
 

@@ -2,6 +2,9 @@ package lt.bta.java2.jpa.entities;
 
 import javax.persistence.*;
 
+/**
+ * Vartotojo objetas atitinkantis DB lentele
+ */
 @Entity
 @Table(name = "users", indexes = @Index(columnList = ("username"), unique = true))
 public class User {

@@ -1,4 +1,4 @@
-# Mano sukurtas servisas
+# Mano sukurto serviso testavimas
 
 GET http://localhost:8080/sportscarshop/api/mar/getcart/1
 Accept: application/json

@@ -1,5 +1,8 @@
 package lt.bta.java2.api.requests;
 
+/**
+ * su Request keliaujantis objektas (body)
+ */
 public class CredentialsRequest {
 
     private String username;

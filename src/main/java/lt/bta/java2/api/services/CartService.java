@@ -14,6 +14,9 @@ import javax.ws.rs.core.Response;
 import java.util.HashSet;
 import java.util.Optional;
 
+/**
+ * Cart operacijų servisas (be autorizaciju)
+ */
 @Path("/cart")
 public class CartService extends BaseService<Cart> {
 

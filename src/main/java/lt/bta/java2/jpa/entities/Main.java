@@ -2,6 +2,9 @@ package lt.bta.java2.jpa.entities;
 
 import lt.bta.java2.jpa.services.Dao;
 
+/**
+ * greitam testavimui skirta klase
+ */
 public class Main {
 
     public static void main(String[] args) {
