@@ -1,0 +1,49 @@
+# Tomcat: http://localhost:8080/sportscarshop/
+# App -> /api
+# ProductService -> /product
+
+# CREATE
+POST http://localhost:8080/sportscarshop/api/product
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Jaguar"
+}
+###
+
+# READ
+GET http://localhost:8080/sportscarshop/api/product/21
+Accept: application/json
+
+###
+
+# READ_LIST
+GET http://localhost:8080/sportscarshop/api/product/list
+Accept: application/json
+
+###
+
+# UPDATE
+PUT http://localhost:8080/sportscarshop/api/product/21
+Accept: application/json
+Content-Type: application/json
+
+{
+  "id": 21,
+  "name": "Porshe",
+  "price": 210000,
+  "image": "https://www.autocar.co.uk/sites/autocar.co.uk/files/styles/body-image/public/911-road-3629a.jpg?itok=m6x23Go0"
+}
+
+###
+
+# DELETE
+DELETE http://localhost:8080/sportscarshop/api/product/5
+Accept: application/json
+Content-Type: application/json
+
+###
+
+
+
