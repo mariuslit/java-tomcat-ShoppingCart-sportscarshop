@@ -11,7 +11,6 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * spalaptazodziu generavimas pasinaudojant slaptu raktu
@@ -42,7 +41,7 @@ final public class JWTHelper {
         claims.put("role", role);
 
         JwtBuilder builder = Jwts.builder()
-                .setId(UUID.randomUUID().toString())
+//                .setId(UUID.randomUUID().toString())
                 .setIssuedAt(now)
                 .setIssuer(issuer)
                 .setClaims(claims)

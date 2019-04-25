@@ -127,9 +127,8 @@ function printCart() {
         method: 'GET',
         dataType: 'json'
     }).done(function (cart) {
-
+        console.log("CART ATSPAUSDINTA");
         bildHtmlCartRows(cart);
-
     }).fail(function () {
         console.log("CART NEATSPAUSDINTA");
     });
@@ -195,11 +194,11 @@ function updateCartLine(productId, oldQty) {
         contentType: 'application/json',
         data: {}
     }).done(function () {
-        console.log("CartLine atnaujinta")
+        console.log("CartLine atnaujinta");
+        printCart();
     }).fail(function () {
         console.log("CART LINE NE ATNAUJINTA");
     });
-    printCart()
 }
 
 // DELETE --------------------------------------------------------------------------------------------------------------
@@ -211,11 +210,11 @@ function deleteCartLine(productId) {
         dataType: 'json',
         contentType: 'application/json'
     }).done(function () {
-        console.log("CartLine istrinta")
+        console.log("CartLine istrinta");
+        printCart();
     }).fail(function () {
         console.log("CART LINE NE ISTRINTA");
     });
-    printCart()
 }
 
 // LOGIN ---------------------------------------------------------------------------------------------------------------
@@ -234,7 +233,7 @@ function login(username, password) {
     }).done(function (data) {
         console.log('PRISILOGINTA');
 
-        sinchronizuotiKrepselius(username);
+        synchronizeCarts(username);
 
         window.localStorage.token = data.token;
 
@@ -250,12 +249,12 @@ function login(username, password) {
     });
 }
 
-function sinchronizuotiKrepselius(username) {
+function synchronizeCarts(username) {
 
     var token = window.localStorage.token;
 
     $.ajax({
-        url: 'api/mar/cart-cart',
+        url: 'api/mar/synchronize',
         method: 'PUT',
         Accept: 'application/json',
         dataType: 'json',
@@ -291,6 +290,7 @@ function logout() {
     });
 }
 
+// todo
 function keepUserCartInDatabase() {
 
     var token = window.localStorage.token;

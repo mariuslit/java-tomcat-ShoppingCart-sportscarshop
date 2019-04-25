@@ -4,7 +4,6 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Pekiu krepselio objetas atitinkantis DB lentele
@@ -27,20 +26,9 @@ public class Cart {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    private UUID uuid;
-
     @Column(name = "total")
     private BigDecimal totalSum;
 
-
-    // tikrina ar krepselyje yra preke
-    public boolean hasProduct(CartLine item) {
-
-        for (CartLine cartLine : this.cartLines)
-            if (cartLine.getProduct().getId() == item.getProduct().getId()) return true;
-
-        return false;
-    }
 
     public void sumQtyIfHasProductOrAddItemIfProductIsNew(CartLine item) {
 
@@ -104,13 +92,5 @@ public class Cart {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
     }
 }

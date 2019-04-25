@@ -25,7 +25,7 @@ Accept: application/json
 
 ###
 
-# GET atspausdianami visi krepšeliai su prekėmis - blogai: ima atsitiktini skaičių prekių
+# GET atspausdianami visi krepšeliai su prekėmis
 GET http://localhost:8080/sportscarshop/api/cart/list
 Accept: application/json
 
@@ -43,6 +43,17 @@ Content-Type: application/json
 # pirma karta paleidus sukuria nauja sesija ir atspausdina sesijos koda,
 # antra - reikia nurodyti Cookie: JSESSIONID=...
 POST http://localhost:8080/sportscarshop/api/cart/add
+Content-Type: application/json
+Accept: application/json
+#Cookie: JSESSIONID=F88BAC4B2C14ADCABDBE2ADD300D4A4A
+
+{
+  "id": 1,
+  "qty": 1
+}
+
+### jeigu tokio cart nera sukurti
+POST http://localhost:8080/sportscarshop/api/cart/5
 Content-Type: application/json
 Accept: application/json
 #Cookie: JSESSIONID=F88BAC4B2C14ADCABDBE2ADD300D4A4A
@@ -71,7 +82,7 @@ Cookie: JSESSIONID=F88BAC4B2C14ADCABDBE2ADD300D4A4A
 PUT http://localhost:8080/sportscarshop/api/cart/updateCartLine/1/555
 Accept: application/json
 Content-Type: application/json
-Cookie: JSESSIONID=1E5F26816EBC0C1E39BF62A598FA113C
+Cookie: JSESSIONID=B1FF38D7886812158004BD729E143DF0
 
 {}
 ###

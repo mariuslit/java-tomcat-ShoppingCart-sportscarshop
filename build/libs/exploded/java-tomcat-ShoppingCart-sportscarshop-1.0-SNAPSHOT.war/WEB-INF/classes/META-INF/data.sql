@@ -33,6 +33,8 @@ insert into cart_lines (cart_id, product_id, qty) values (2, 4, 20);
 insert into cart_lines (cart_id, product_id, qty) values (2, 5, 20);
 insert into cart_lines (cart_id, product_id, qty) values (2, 6, 20);
 
+insert into carts (user_id, total) values (1, 0);
+insert into cart_lines (cart_id, product_id, qty) values (3, 7, 30);
 
 
 

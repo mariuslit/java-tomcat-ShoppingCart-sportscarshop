@@ -33,8 +33,8 @@ public class MarService extends BaseService<Cart> {
 
     @AccessRoles({Role.USER, Role.ADMIN})
     @PUT
-    @Path("/cart-cart")
-    public Response sudetiDuKepselius() {
+    @Path("/synchronize")
+    public Response synchronizeCarts() {
 
         HttpSession session = servletRequest.getSession();
 
@@ -64,8 +64,8 @@ public class MarService extends BaseService<Cart> {
         return Response.ok(sessionCart).build();
     }
 
-    // todo
-    @AccessRoles({Role.USER, Role.ADMIN})
+    // paima session cart ir issaugo DB
+//    @AccessRoles({Role.USER, Role.ADMIN})
     @PUT
     @Path("/keepusercart")
     public Response keepUserCartInDatabase() {
@@ -90,6 +90,8 @@ public class MarService extends BaseService<Cart> {
             Cart userCart = cartDao.read(user.getId(), Cart.GRAPH_CART_LINES);
             userCart.setCartLines(sessionCart.getCartLines());
             userCart.setTotalSum(sessionCart.getTotalSum());
+
+            // todo kodel nesuveikia Cart update
             userCart = cartDao.update(userCart);
 
             return Response.ok(userCart).build();

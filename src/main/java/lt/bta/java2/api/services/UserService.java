@@ -82,7 +82,6 @@ public class UserService {
                 user.getId(), user.getUsername(), user.getRole(), 1000L * 60 * 60);
 
         return Response.ok(Collections.singletonMap("login", "ok")).entity(Collections.singletonMap("token", token)).build();
-//        return Response.ok().build(); // todo access
     }
 
     @POST

@@ -92,7 +92,7 @@ public class Dao<T> implements AutoCloseable {
         return typedQuery.getResultList();
     }
 
-    // READ_LIST_ALL
+    // READ_LIST_ALL skirtas pagintion kurti [1][2][3]...
     public List<T> listAll() {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();

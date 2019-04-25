@@ -13,7 +13,6 @@ public class CartLine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int qty;
 
     @JsonIgnore
     @ManyToOne
@@ -21,6 +20,9 @@ public class CartLine {
 
     @ManyToOne
     private Product product;
+
+    private int qty;
+
 
     @Override
     public String toString() {

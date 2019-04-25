@@ -7,10 +7,17 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:8080/sportscarshop/api/mar/cart-cart/1
+PUT http://localhost:8080/sportscarshop/api/mar/synchronize
 Accept: application/json
 Content-Type: application/json
-#Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoidXNlciIsInVzZXJOYW1lIjoidXNlckBnbWFpbC5jb20iLCJ1c2VySWQiOjEsImV4cCI6MTU1NTk2MTUxOX0.3VrQ0n5kOWCC2lGvLtR2WBJ22gCYpQHZUhPhxjtWz5M
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoidXNlciIsInVzZXJOYW1lIjoidXNlckBnbWFpbC5jb20iLCJ1c2VySWQiOjEsImV4cCI6MTU1NjE4MjEyOH0.fLGAEsPYFeX6NW0Ot38OpIofa4PfsGWiI4EjfE9sK1k
+
+###
+
+PUT http://localhost:8080/sportscarshop/api/mar/keepusercart
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoidXNlciIsInVzZXJOYW1lIjoidXNlcjNAZ21haWwuY29tIiwidXNlcklkIjozLCJleHAiOjE1NTYxNzU3Mjl9.TUw46z5DLoWYpF_mdBUPn1hTVOW0_mjpWqtCNRig5UI
 
 ###
 

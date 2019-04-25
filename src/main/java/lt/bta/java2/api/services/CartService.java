@@ -32,7 +32,7 @@ public class CartService extends BaseService<Cart> {
     // CRUD
 
     // CREATE veikia be priekaistu
-//    @POST
+    @POST
     @Override
     public Response add(Cart cart) {
 
@@ -43,7 +43,6 @@ public class CartService extends BaseService<Cart> {
         }
     }
 
-    // pridedamas produktas su sesija
     // add cart line in session
     @POST
     @Path("/add")
@@ -86,24 +85,6 @@ public class CartService extends BaseService<Cart> {
 
     // CREATE cartLine by cart id
 
-    /**
-     * per parametra gauname krepselio cartId
-     * per objekta(web/json) gauname prekes productId ir qty
-     * 1
-     * nuskaitome krepseli cart paga cartId
-     * 2
-     * nuskaitome preke product paga productId
-     * todo
-     * 3
-     * tikriname ar tokia preke jau yra krepselyje,
-     * - jei taip - cartLine.qty++
-     * - jei ne - sukuriame nauja CartLine obj cartLine
-     * -- i cartLine pridedame product
-     * -- i cartLine pridedame qty
-     * dedame cartLine į krepselio prekiu list
-     * 4
-     * update cartLine
-     */
     // add cart line in DB
     @POST
     @Path("/{id}")
@@ -184,15 +165,21 @@ public class CartService extends BaseService<Cart> {
         }
     }
 
-    // gauti cart is session
+    // gauti cart is session, jei session neturi cart - sukurti
     @GET
     @Path("/getsessioncart")
     public Response getCart() {
 
         HttpSession session = servletRequest.getSession();
-        Cart cart = (Cart) session.getAttribute("cart");
+        Object obj = session.getAttribute("cart");
+        Cart cart;
+        if (obj instanceof Cart) {
+            cart = (Cart) obj;
+        } else {
+            cart = new Cart();
+            session.setAttribute("cart", cart);
+        }
         return Response.ok(cart).build();
-
     }
 
     // update cart line in session
