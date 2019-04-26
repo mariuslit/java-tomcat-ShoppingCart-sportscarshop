@@ -81,6 +81,7 @@ public class UserService {
         String token = JWTHelper.createJWT("my-app",
                 user.getId(), user.getUsername(), user.getRole(), 1000L * 60 * 60);
 
+//        return Response.ok(Collections.singletonMap("login", "ok")).build();
         return Response.ok(Collections.singletonMap("login", "ok")).entity(Collections.singletonMap("token", token)).build();
     }
 

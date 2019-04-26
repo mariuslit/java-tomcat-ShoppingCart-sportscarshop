@@ -15,6 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import java.util.LinkedHashSet;
 
 /**
  * Cart operacijų servisas (su autorizacijomis)
@@ -87,12 +88,21 @@ public class MarService extends BaseService<Cart> {
 
         try (Dao<Cart> cartDao = createDao()) {
 
-            Cart userCart = cartDao.read(user.getId(), Cart.GRAPH_CART_LINES);
-            userCart.setCartLines(sessionCart.getCartLines());
+            final Cart userCart = cartDao.read(user.getId(), Cart.GRAPH_CART_LINES);
+
+            if (userCart.getCartLines() == null) {
+                userCart.setCartLines(new LinkedHashSet<>());
+            } else {
+                userCart.getCartLines().clear();
+            }
+
+            userCart.getCartLines().addAll(sessionCart.getCartLines());
+            userCart.getCartLines().stream()
+                    .forEach(x -> x.setCart(userCart));
             userCart.setTotalSum(sessionCart.getTotalSum());
 
             // todo kodel nesuveikia Cart update
-            userCart = cartDao.update(userCart);
+            cartDao.update(userCart);
 
             return Response.ok(userCart).build();
         }
