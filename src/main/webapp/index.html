@@ -33,7 +33,7 @@
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="username" placeholder="Username"
                                    value="" autocomplete="username">
-                                   <!--value="user@gmail.com" autocomplete="username">-->
+                            <!--value="user@gmail.com" autocomplete="username">-->
                         </div>
                     </div>
                     <div class="form-group row">
@@ -41,14 +41,15 @@
                         <div class="col-sm-10">
                             <input type="password" class="form-control" id="password" placeholder="Password"
                                    value="" autocomplete="current-password">
-                                   <!--value="user@gmail.com" autocomplete="current-password">-->
+                            <!--value="user@gmail.com" autocomplete="current-password">-->
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="mar-loginButton">Login</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="mar-newUserButton">New User</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="mar-newUserButton">New User
+                </button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -75,7 +76,8 @@
             <a class="nav-link" href="#" id="mar-signOut">Sign Out</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true" id="mar-loggedUserName">User: Guest</a>
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true" id="mar-loggedUserName">User:
+                Guest</a>
         </li>
     </ul>
 
@@ -121,7 +123,7 @@
         <h3>Your Shopping Cart</h3>
     </div>
 
-    <table id="cart" class="table table-hover table-condensed">
+    <table class="table table-hover table-condensed">
         <thead>
         <tr>
             <th style="width:40%">Product</th>
@@ -154,7 +156,43 @@
     </table>
 </div>
 
-<!--   3 SCRIPT FILES  -->
+<!--   3 ORDER VIEW  -->
+<div class="modal" tabindex="-1" role="dialog" id="mar-orderModalView">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span class="font-weight-bold">Order</span></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover table-condensed">
+                    <thead>
+                    <tr>
+                        <th style="width:45%">Product</th>
+                        <th style="width:20%" class="text-right">Price</th>
+                        <th style="width:15%" class="text-right">Quantity</th>
+                        <th style="width:20%" class="text-right">Subtotal</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="mar-orderListTbody">
+                    <!-- add products here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <!--<div class="nav">-->
+                <!--</div>-->
+                <p class="text-left">Date: <strong id="mar-orderDate"></strong></p>
+                <p class="text-center">Total € <strong id="mar-orderTotal">0</strong></p>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"> OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--   SCRIPT FILES  -->
 <div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"

@@ -5,7 +5,7 @@
 # CRUD
 
 # ADD sukuriamas tuščias krepšelis
-POST http://localhost:8080/sportscarshop/api/cart2
+POST http://localhost:8080/sportscarshop/api/cart
 Content-Type: application/json
 Accept: application/json
 
@@ -53,7 +53,7 @@ Cookie: JSESSIONID=B1275833226CC0CAF4F5F683B01FD0FC
 }
 
 ### jeigu tokio cart nera sukurti
-POST http://localhost:8080/sportscarshop/api/cart/5
+POST http://localhost:8080/sportscarshop/api/cart/1
 Content-Type: application/json
 Accept: application/json
 #Cookie: JSESSIONID=F88BAC4B2C14ADCABDBE2ADD300D4A4A
@@ -65,7 +65,7 @@ Accept: application/json
 
 ###
 
-GET http://localhost:8080/sportscarshop/api/cart
+GET http://localhost:8080/sportscarshop/api/cart/getsessioncart
 Accept: application/json
 Content-Type: application/json
 Cookie: JSESSIONID=B1275833226CC0CAF4F5F683B01FD0FC

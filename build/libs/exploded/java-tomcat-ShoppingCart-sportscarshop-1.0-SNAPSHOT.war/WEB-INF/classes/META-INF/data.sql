@@ -20,14 +20,13 @@ insert into products (name, price, image) values ('Bugatti Chiron', 3000000, 'ht
 insert into products (name, price, image) values ('Porsche Panamera', 140000, 'https://porschesportcar.com/wp-content/uploads/2017/11/porsche-2018-panamera-2.jpg');
 
 # testavimui password = username
-# insert into users (username, secret, role) values ('user@gmail.com', '$2a$10$m3JdnsfXBaEMPS4DCFF30eX3IMKcQsslLanRZTjLRURu2lVM.aVU.', 'user');
-# insert into users (username, secret, role) values ('admin@gmail.com', '$2a$10$GovzvMHKM2X7aSUGQN/8TuG6gcKm9pxltuUWJajjX2ZYpxXCNNfaa', 'admin');
-#
-# insert into carts (user_id, total) values (1, 0);
+insert into users (username, role, secret) values ('admin@gmail.com', 'admin', '$2a$10$GovzvMHKM2X7aSUGQN/8TuG6gcKm9pxltuUWJajjX2ZYpxXCNNfaa');
+insert into carts (user_id, total) values (1, 0);
 # insert into cart_lines (cart_id, product_id, qty) values (1, 1, 10);
 # insert into cart_lines (cart_id, product_id, qty) values (1, 2, 10);
 # insert into cart_lines (cart_id, product_id, qty) values (1, 3, 10);
 #
+# insert into users (username, role, secret) values ('user@gmail.com', 'user', '$2a$10$m3JdnsfXBaEMPS4DCFF30eX3IMKcQsslLanRZTjLRURu2lVM.aVU.');
 # insert into carts (user_id, total) values (2, 0);
 # insert into cart_lines (cart_id, product_id, qty) values (2, 4, 20);
 # insert into cart_lines (cart_id, product_id, qty) values (2, 5, 20);

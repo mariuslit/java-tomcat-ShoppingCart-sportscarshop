@@ -2,6 +2,7 @@ package lt.bta.java2.jpa.entities;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 

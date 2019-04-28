@@ -38,13 +38,14 @@ $(function () {
 
     // [Buy]
     $('#mar-buyButton').click(function () {
-        // keepUserCartInDatabase()
+        $('#mar-cartView').hide();
+        $('#mar-productView').show();
+        buy()
     });
 
     // [Sign In]
     $('#mar-signIn').click(function () {
         $('#mar-loginModal').modal('show');
-
     });
     // [Sign In - Login button]
     $('#mar-loginButton').click(function () {
@@ -353,4 +354,60 @@ function keepUserCartInDatabase() {
         alert("VARTOTOJO KREPŠELIS NE ISSAUGOTAS DB");
     });
 }
+
+function buy() {
+
+    // $.ajax({
+    //     url: 'api/order/buy',
+    //     method: 'GET',
+    //     dataType: 'json'
+    $.ajax({
+        url: 'api/order/buy',
+        method: 'POST',
+        dataType: 'json',
+        Accept: 'application/json',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            // username: "ok",
+            // password: "ok"
+        })
+    }).done(function (order) {
+        console.log('APMOKĖTA');
+        console.log('orderLinesSize=' + order.orderLines.length);
+        printOrder(order);
+        $('#mar-orderModalView').modal('show');
+
+    }).fail(function () {
+        console.log('NE APMOKĖTA');
+        alert('NE APMOKĖTA!');
+    });
+}
+
+function printOrder(order) {
+
+    var orderLines = order.orderLines;
+
+    var html = '';
+    for (var i = 0; i < orderLines.length; i++) {
+
+        html += addHtmlOrderRow(orderLines[i].id, orderLines[i].qty, orderLines[i].product);
+    }
+
+    $('#mar-orderListTbody').html(html);
+    $('#mar-orderDate').html(order.date.toLocaleString());
+    $('#mar-orderTotal').html(order.total.toLocaleString());
+}
+
+function addHtmlOrderRow(cartLineId, cartLineQty, product) {
+
+    var html = '<tr>';
+    html += '<td data-th="Product"><h5 class="nomargin">' + product.name + '</h5></td>';
+    html += '<td data-th="Price" class="text-right">€ ' + product.price.toLocaleString() + '</td>';
+    html += '<td data-th="Quantity" class="text-right">' + cartLineQty + '</td>';
+    html += '<td data-th="Subtotal" class="text-right">€ ' + (product.price * cartLineQty).toLocaleString() + '</td>';
+    html += '</tr>';
+    return html;
+}
+
+
 

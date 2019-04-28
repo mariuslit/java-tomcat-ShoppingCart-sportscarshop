@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Optional;
@@ -35,23 +36,27 @@ public class CartService extends BaseService<Cart> {
 
     // CRUD
 
-//    @POST
-//    @Path("/newsessioncart")
-//    public Response newSessionCart() {
-//
-//        HttpSession session = servletRequest.getSession();
-//        Object obj = session.getAttribute("cart");
-//        Cart cart;
-//        if (obj instanceof Cart) {
-//            cart = (Cart) obj;
-//        } else {
-//            cart = new Cart();
-//            session.setAttribute("cart", cart);
-//        }
-//        return Response.ok(cart).build();
-//    }
+    // gauti cart is session, jei session neturi cart - sukurti
+    @GET
+    @Path("/getsessioncart")
+    public Response getSessionCart() {
+
+        HttpSession session = servletRequest.getSession();
+        Object obj = session.getAttribute("cart");
+        Cart cart;
+        if (obj instanceof Cart) {
+            cart = (Cart) obj;
+        } else {
+            cart = new Cart();
+//            cart.setTotal(BigDecimal.ZERO);
+            cart.setTotal(BigDecimal.ZERO);
+            session.setAttribute("cart", cart);
+        }
+        return Response.ok(cart).build();
+    }
 
     // add cart line in session
+//    @AccessRoles({Role.USER, Role.ADMIN})
     @POST
     @Path("/jamam")
     public Response addCartLine(AddCartLineRequest addCartLineRequest) {
@@ -90,26 +95,11 @@ public class CartService extends BaseService<Cart> {
             sessionCart.getCartLines().add(cartLine);
         }
 
+        // todo ?? ar teisinga šitaip kreiptis į meodą
+        //  kuris skirtas aptarnauti request užklausas
         keepUserCartInDatabase();
 
         return Response.ok(sessionCart).build();
-    }
-
-    // gauti cart is session, jei session neturi cart - sukurti
-    @GET
-    @Path("/getsessioncart")
-    public Response getSessionCart() {
-
-        HttpSession session = servletRequest.getSession();
-        Object obj = session.getAttribute("cart");
-        Cart cart;
-        if (obj instanceof Cart) {
-            cart = (Cart) obj;
-        } else {
-            cart = new Cart();
-            session.setAttribute("cart", cart);
-        }
-        return Response.ok(cart).build();
     }
 
     // update cart line in session
@@ -170,7 +160,7 @@ public class CartService extends BaseService<Cart> {
         return Response.ok(cart).build();
     }
 
-    @AccessRoles({Role.USER, Role.ADMIN})
+//    @AccessRoles({Role.USER, Role.ADMIN})
     @PUT
     @Path("/synchronize")
     public Response synchronizeCarts() {
@@ -203,10 +193,7 @@ public class CartService extends BaseService<Cart> {
             cartDao.update(userCart);
             session.setAttribute("cart", userCart);
         }
-
-
-        // todo ?? ar galima šitaip kreiptis į meodą kuris skirtas aptarnauti request užklausas
-//        keepUserCartInDatabase();
+        keepUserCartInDatabase();
         return Response.ok(sessionCart).build();
     }
 
@@ -234,7 +221,7 @@ public class CartService extends BaseService<Cart> {
 
             final Cart userCart = cartDao.read(user.getId(), Cart.GRAPH_CART_LINES);
             if (userCart.getCartLines() == null) {
-                userCart.setCartLines(new LinkedHashSet<>());
+                userCart.setCartLines(new HashSet<>());
             } else {
                 userCart.getCartLines().clear();
             }

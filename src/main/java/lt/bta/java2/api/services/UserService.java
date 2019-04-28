@@ -15,10 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * User operacijų servisas
@@ -86,12 +83,12 @@ public class UserService {
         Dao<Cart> cartDao = new Dao<>(Cart.class);
         Cart cart = new Cart();
         cart.setUser(user);
-        cart.setCartLines(new LinkedHashSet<>());
+        cart.setCartLines(new HashSet<>());
         cart.setTotal(BigDecimal.ZERO);
         cartDao.create(cart);
 
         String token = JWTHelper.createJWT("my-app",
-                user.getId(), user.getUsername(), user.getRole(), 1000L * 60 * 60);
+                user.getId(), user.getUsername(), user.getRole(), 1000L * 60 * 5);//todo token
 
         return Response.ok(Collections.singletonMap("login", "ok")).entity(Collections.singletonMap("token", token)).build();
     }
