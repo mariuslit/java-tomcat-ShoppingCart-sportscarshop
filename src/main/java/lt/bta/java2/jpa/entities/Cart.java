@@ -26,30 +26,32 @@ public class Cart {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @Column(name = "total")
-    private BigDecimal totalSum;
+    private BigDecimal total;
 
 
-    public void sumQtyIfHasProductOrAddItemIfProductIsNew(CartLine item) {
+    public void setQtyIfHasProductOrAddItemIfProductIsNew(CartLine sessionCartLine ) {
 
-        for (CartLine cartLine : this.cartLines) {
+        for (CartLine userCartLine : this.cartLines) {
 
-            if (cartLine.getProduct().getId() == item.getProduct().getId()) {
-                cartLine.setQty(cartLine.getQty() + item.getQty());
+            if (userCartLine.getProduct().getId() == sessionCartLine.getProduct().getId()) {
+                userCartLine.setQty(sessionCartLine.getQty());
                 return;
             }
         }
-        this.cartLines.add(item);
+        CartLine cartLine = new CartLine();
+        cartLine.setCart(this);
+        cartLine.setProduct(sessionCartLine.getProduct());
+        cartLine.setQty(sessionCartLine.getQty());
+        this.cartLines.add(cartLine);
     }
 
     @Override
     public String toString() {
         return "Cart{" +
                 "id=" + id +
-                ", sum=" + totalSum +
+                ", total=" + total +
                 ", cartLines=" + cartLines +
 //                ", user=" + user +
-//                ", uuid=" + uuid +
                 '}';
     }
 
@@ -69,7 +71,7 @@ public class Cart {
         this.cartLines = cartLines;
     }
 
-    public BigDecimal getTotalSum() {
+    public BigDecimal getTotal() {
 
         BigDecimal cartSum = BigDecimal.ZERO;
 
@@ -82,8 +84,8 @@ public class Cart {
         return cartSum;
     }
 
-    public void setTotalSum(BigDecimal sum) {
-        this.totalSum = sum;
+    public void setTotal(BigDecimal sum) {
+        this.total = sum;
     }
 
     public User getUser() {

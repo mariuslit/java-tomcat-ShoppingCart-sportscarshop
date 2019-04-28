@@ -26,7 +26,7 @@ public class CartLine {
 
     @Override
     public String toString() {
-        return "\n  CartLine{" +
+        return "CartLine{" +
                 "id=" + id +
                 ", product=" + product +
 //                ", cart=" + cart +

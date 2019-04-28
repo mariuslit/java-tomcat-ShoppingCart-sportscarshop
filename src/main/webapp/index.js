@@ -3,6 +3,7 @@ $(function () {
     var skip = 0;
     var rowsPerPage = 3;
 
+    createSessionCart();
     printProducts(skip, rowsPerPage);
 
     $('.mar-invisible').hide();
@@ -37,7 +38,7 @@ $(function () {
 
     // [Buy]
     $('#mar-buyButton').click(function () {
-        keepUserCartInDatabase()
+        // keepUserCartInDatabase()
     });
 
     // [Sign In]
@@ -49,12 +50,29 @@ $(function () {
     $('#mar-loginButton').click(function () {
         login($('#username').val(), $('#password').val());
     });
+    // [Sign In - New User button]
+    $('#mar-newUserButton').click(function () {
+        newUser($('#username').val(), $('#password').val());
+    });
 
     // [Sign Out]
     $('#mar-signOut').click(function () {
         logout();
     });
 });
+
+function createSessionCart() {
+
+    $.ajax({
+        url: 'api/cart/getsessioncart',
+        method: 'GET',
+        dataType: 'json'
+    }).done(function () {
+        console.log('SESIJOS KREPSELIS SUKURTAS');
+    }).fail(function () {
+        console.log('SESIJOS KREPSELIS NE SUKURTAS');
+    });
+}
 
 // PRODUCTS ------------------------------------------------------------------------------------------------------------
 function printProducts(skip, rowsPerPage) {
@@ -103,7 +121,7 @@ function jamam(productId) {
 
     // dedama į 1 krepseli
     $.ajax({
-        url: 'api/cart/add',
+        url: 'api/cart/jamam',
         method: 'POST',
         dataType: 'json',
         contentType: 'application/json',
@@ -112,9 +130,8 @@ function jamam(productId) {
             qty: 1
         })
     }).done(function () {
-
+        console.log('PREKE ĮDĖTA Į KREPŠELĮ');
         printCart();
-
     }).fail(function () {
         console.log('PREKE NE ĮDĖTA Į KREPŠELĮ');
     });
@@ -127,7 +144,6 @@ function printCart() {
         method: 'GET',
         dataType: 'json'
     }).done(function (cart) {
-        console.log("CART ATSPAUSDINTA");
         bildHtmlCartRows(cart);
     }).fail(function () {
         console.log("CART NEATSPAUSDINTA");
@@ -145,8 +161,8 @@ function bildHtmlCartRows(cart) {
     }
 
     $('#mar-cartListTbody').html(html);
-    $('#mar-totalSum').html(cart.totalSum.toLocaleString());
-    $('#mar-totalSumRespons').html(cart.totalSum.toLocaleString());
+    $('#mar-totalSum').html(cart.total.toLocaleString());
+    $('#mar-totalSumRespons').html(cart.total.toLocaleString());
     $('.mar-invisible').hide();
 
     $('.mar-refreshCartLine').on('click', function () {
@@ -167,7 +183,7 @@ function addHtmlCartRow(cartLineId, cartLineQty, product) {
     html += '     <div class="col-sm-2 hidden-xs"><img src="' + product.image + '"  alt="..." class="img-fluid"/></div>';
     html += '     <div class="col-sm-10">';
     html += '       <h4 class="nomargin">' + product.name + '</h4>';
-    html += '       <p>Good car!' + '</p>'; // dscription place
+    html += '       <p>' + '</p>'; // dscription place
     html += '     </div>';
     html += '   </div>';
     html += ' </td>';
@@ -194,7 +210,7 @@ function updateCartLine(productId, oldQty) {
         contentType: 'application/json',
         data: {}
     }).done(function () {
-        console.log("CartLine atnaujinta");
+        console.log("CART LINE ATNAUJINTA");
         printCart();
     }).fail(function () {
         console.log("CART LINE NE ATNAUJINTA");
@@ -210,7 +226,7 @@ function deleteCartLine(productId) {
         dataType: 'json',
         contentType: 'application/json'
     }).done(function () {
-        console.log("CartLine istrinta");
+        console.log("CART LINE ISTRINTA");
         printCart();
     }).fail(function () {
         console.log("CART LINE NE ISTRINTA");
@@ -233,9 +249,9 @@ function login(username, password) {
     }).done(function (data) {
         console.log('PRISILOGINTA');
 
-        synchronizeCarts(username);
-
         window.localStorage.token = data.token;
+
+        synchronizeCarts(username);
 
         $('#mar-signIn').hide();
         $('#mar-signOut').show();
@@ -249,23 +265,34 @@ function login(username, password) {
     });
 }
 
-function synchronizeCarts(username) {
-
-    var token = window.localStorage.token;
+function newUser(username, password) {
 
     $.ajax({
-        url: 'api/mar/synchronize',
-        method: 'PUT',
-        Accept: 'application/json',
+        url: 'api/auth/newuser',
+        method: 'POST',
         dataType: 'json',
-        headers: {Authorization: "Bearer " + token}
-    }).done(function (userCart) {
+        Accept: 'application/json',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            username: username,
+            password: password,
+            role: "user"
+        })
+    }).done(function (data) {
+        console.log('SUKURTAS NEW USER ' + username + '-' + password);
 
-        alert("Guest krepšelis sinchonizuotas su vartotojo\n" + username + '\nkrepšeliu');
-        console.log("User cart=" + userCart);
+        window.localStorage.token = data.token;
+
+        synchronizeCarts(username);
+
+        $('#mar-signIn').hide();
+        $('#mar-signOut').show();
+        $('#mar-loginModal').modal('hide');
+        $('#mar-loggedUserName').text('New User: ' + username);
 
     }).fail(function () {
-        console.log("KREPŠELIS NESINCHRONIZUOTAS");
+        $('#mar-loginModal').modal('hide');
+        alert('NE SUKURTAS NEW USER');
     });
 }
 
@@ -290,21 +317,38 @@ function logout() {
     });
 }
 
-// todo
+function synchronizeCarts(username) {
+
+    var token = window.localStorage.token;
+
+    $.ajax({
+        url: 'api/cart/synchronize',
+        method: 'PUT',
+        Accept: 'application/json',
+        dataType: 'json',
+        headers: {Authorization: "Bearer " + token}
+    }).done(function () {
+
+        console.log("GUEST KREPŠELIS SINCHRONIZUOTAS SU:\n " + username);
+        // console.log("User cart=" + userCart);
+
+    }).fail(function () {
+        alert("KREPŠELIS NESINCHRONIZUOTAS");
+    });
+}
+
 function keepUserCartInDatabase() {
 
     var token = window.localStorage.token;
 
     $.ajax({
-        url: 'api/mar/keepusercart',
+        url: 'api/cart/keepusercart',
         method: 'PUT',
         Accept: 'application/json',
         dataType: 'json',
         headers: {Authorization: "Bearer " + token}
-    }).done(function (userCart) {
+    }).done(function () {
         console.log("VARTOTOJO KREPŠELIS ISSAUGOTAS DB");
-        console.log("User cart=" + userCart);
-
     }).fail(function () {
         alert("VARTOTOJO KREPŠELIS NE ISSAUGOTAS DB");
     });

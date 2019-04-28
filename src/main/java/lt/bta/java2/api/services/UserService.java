@@ -2,6 +2,7 @@ package lt.bta.java2.api.services;
 
 import lt.bta.java2.api.helpers.JWTHelper;
 import lt.bta.java2.api.requests.CredentialsRequest;
+import lt.bta.java2.jpa.entities.Cart;
 import lt.bta.java2.jpa.entities.User;
 import lt.bta.java2.jpa.services.Dao;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -13,7 +14,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
+import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -50,12 +53,47 @@ public class UserService {
         user.setUsername(userRequest.getUsername());
         user.setSecret(BCrypt.hashpw(userRequest.getPassword(), BCrypt.gensalt()));
         user.setRole(userRequest.getRole());
-        // session
         HttpSession session = servletRequest.getSession();
         session.setAttribute("user", user);
-
         userDao.create(user);
         return Response.ok().build();
+    }
+
+    @POST
+    @Path("/newuser")
+    public Response newUser(CredentialsRequest userRequest) {
+
+        // todo ?? kaip logiškai išskaidyti šiuos du veiksmus
+        //      ar kurti dvi atskiras užklausas iš front-end
+        //      ar palikti kaip čia
+        // new user
+        Dao<User> userDao = new Dao<>(User.class);
+        List<User> users = userDao.findBy("username", userRequest.getUsername());
+        // validacija username
+        if (users.size() > 0) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        User user = new User();
+        user.setUsername(userRequest.getUsername());
+        user.setSecret(BCrypt.hashpw(userRequest.getPassword(), BCrypt.gensalt()));
+        user.setRole("user");
+        HttpSession session = servletRequest.getSession();
+        session.setAttribute("user", user);
+        userDao.create(user);
+
+        // nwe cart in DB for new user
+        Dao<Cart> cartDao = new Dao<>(Cart.class);
+        Cart cart = new Cart();
+        cart.setUser(user);
+        cart.setCartLines(new LinkedHashSet<>());
+        cart.setTotal(BigDecimal.ZERO);
+        cartDao.create(cart);
+
+        String token = JWTHelper.createJWT("my-app",
+                user.getId(), user.getUsername(), user.getRole(), 1000L * 60 * 60);
+
+        return Response.ok(Collections.singletonMap("login", "ok")).entity(Collections.singletonMap("token", token)).build();
     }
 
     @POST
@@ -73,7 +111,6 @@ public class UserService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        // jeigu request neturi sesijos tai ji sukuriama
         HttpSession session = servletRequest.getSession();
         session.setAttribute("user", users.get(0));
 
@@ -89,11 +126,13 @@ public class UserService {
     @Path("/logout")
     public Response logout() {
 
-        // jeigu request neturi sesijos tai ji sukuriama
         HttpSession session = servletRequest.getSession(false);
         if (session != null) {
             session.removeAttribute("user");
-//            session.removeAttribute("token");
+            session.removeAttribute("cart");
+
+            Cart cart = new Cart();
+            session.setAttribute("cart", cart);
         }
 
         return Response.ok().build();

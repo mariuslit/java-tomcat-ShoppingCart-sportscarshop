@@ -1,14 +1,26 @@
 # USR
 
+# CEATE NEW USER
+POST http://localhost:8080/sportscarshop/api/auth/newuser
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "user5@gmail.com",
+  "password": "user5@gmail.com"
+}
+
+###
+
 # CEATE NEW ACCOUNT
 POST http://localhost:8080/sportscarshop/api/auth/create
 Content-Type: application/json
 Accept: application/json
 
 {
-  "username": "user3@gmail.com",
-  "password": "user3@gmail.com",
-  "role": "user"
+  "username": "user4@gmail.com",
+  "password": "user4@gmail.com",
+  "role": "admin"
 }
 
 ###

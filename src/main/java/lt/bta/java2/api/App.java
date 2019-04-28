@@ -18,7 +18,6 @@ public class App extends ResourceConfig {
         register(ObjectMapperContextResolver.class);
         register(ProductService.class);
         register(CartService.class);
-        register(MarService.class);
         register(UserService.class);
         register(AuthenticationFilter.class);
         property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, true);

@@ -1,9 +1,12 @@
 package lt.bta.java2.api.services;
 
+import lt.bta.java2.api.filters.AccessRoles;
+import lt.bta.java2.api.filters.Role;
 import lt.bta.java2.api.requests.AddCartLineRequest;
 import lt.bta.java2.jpa.entities.Cart;
 import lt.bta.java2.jpa.entities.CartLine;
 import lt.bta.java2.jpa.entities.Product;
+import lt.bta.java2.jpa.entities.User;
 import lt.bta.java2.jpa.services.Dao;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,10 +15,11 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 
 /**
- * Cart operacijų servisas (be autorizaciju)
+ * Cart operacijų servisas
  */
 @Path("/cart")
 public class CartService extends BaseService<Cart> {
@@ -31,41 +35,48 @@ public class CartService extends BaseService<Cart> {
 
     // CRUD
 
-    // CREATE veikia be priekaistu
-    @POST
-    @Override
-    public Response add(Cart cart) {
-
-        try (Dao<Cart> dao = createDao()) {
-
-            dao.create(cart);
-            return Response.ok(cart).build();
-        }
-    }
+//    @POST
+//    @Path("/newsessioncart")
+//    public Response newSessionCart() {
+//
+//        HttpSession session = servletRequest.getSession();
+//        Object obj = session.getAttribute("cart");
+//        Cart cart;
+//        if (obj instanceof Cart) {
+//            cart = (Cart) obj;
+//        } else {
+//            cart = new Cart();
+//            session.setAttribute("cart", cart);
+//        }
+//        return Response.ok(cart).build();
+//    }
 
     // add cart line in session
     @POST
-    @Path("/add")
+    @Path("/jamam")
     public Response addCartLine(AddCartLineRequest addCartLineRequest) {
 
         Dao<Product> productDao = new Dao<>(Product.class);
         Product product = productDao.read(addCartLineRequest.getId());
-        if (product == null) return Response.status(Response.Status.NOT_FOUND).build();
-
-        HttpSession session = servletRequest.getSession();
-
-        Object obj = session.getAttribute("cart");
-        Cart cart;
-        if (obj instanceof Cart) {
-            cart = (Cart) obj;
-        } else {
-            cart = new Cart();
-            session.setAttribute("cart", cart);
+        if (product == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        if (cart.getCartLines() == null) cart.setCartLines(new HashSet<>());
+        HttpSession session = servletRequest.getSession();
+        Object obj = session.getAttribute("cart");
+        Cart sessionCart;
+        if (obj instanceof Cart) {
+            sessionCart = (Cart) obj;
+        } else {
+            sessionCart = new Cart();
+            session.setAttribute("cart", sessionCart);
+        }
 
-        Optional<CartLine> line = cart.getCartLines().stream()
+        if (sessionCart.getCartLines() == null) {
+            sessionCart.setCartLines(new HashSet<>());
+        }
+
+        Optional<CartLine> line = sessionCart.getCartLines().stream()
                 .filter(x -> x.getProduct().getId() == addCartLineRequest.getId())
                 .findFirst();
 
@@ -74,101 +85,20 @@ public class CartService extends BaseService<Cart> {
             cartLine.setQty(cartLine.getQty() + addCartLineRequest.getQty());
         } else {
             CartLine cartLine = new CartLine();
-            cartLine.setId(cart.getCartLines().size() + 1); // coment on DB
             cartLine.setProduct(product);
             cartLine.setQty(addCartLineRequest.getQty());
-            cart.getCartLines().add(cartLine);
+            sessionCart.getCartLines().add(cartLine);
         }
 
-        return Response.ok(cart).build();
-    }
+        keepUserCartInDatabase();
 
-    // CREATE cartLine by cart id
-
-    // add cart line in DB
-    @POST
-    @Path("/{id}")
-    public Response addCartLine(@PathParam("id") int cartId, AddCartLineRequest addCartLineRequest) {
-
-        int productId = addCartLineRequest.getId();
-        int qty = addCartLineRequest.getQty();
-
-        try (Dao<Cart> cartDao = createDao()) {
-
-            // 1
-            Cart cart = cartDao.read(cartId);
-            if (cart == null)
-                // jeigu cart=null sukurti nauja
-                return Response.status(Response.Status.NOT_FOUND).build();
-
-            // 2
-            Dao<Product> productDao = new Dao<>(Product.class);
-            Product product = productDao.read(productId);
-            if (product == null)
-                return Response.status(Response.Status.NOT_FOUND).build();
-
-            // 3 patikrinti ar cart.crtLine turi tokia preke
-            boolean isCartLine = false;
-            for (CartLine cartLine : cart.getCartLines()) {
-
-                // jei turi pridėti qty
-                if (cartLine.getProduct().getId() == product.getId()) {
-
-                    cartLine.setQty(cartLine.getQty() + qty);
-                    isCartLine = true;
-                    break;
-                }
-            }
-
-            // jei neturi sukurti nauja cartLine ir paduoti i cart
-            if (!isCartLine) {
-
-                CartLine cartLine = new CartLine();
-                cartLine.setCart(cart);
-                cartLine.setQty(qty);
-                cartLine.setProduct(product);
-                cart.getCartLines().add(cartLine);
-            }
-
-            cart = cartDao.update(cart);
-            return Response.ok(cart).build();
-        }
-    }
-
-    @GET // READ_LIST
-    @Path("/list")
-    public Response list(@QueryParam("size") @DefaultValue("10") int size, @QueryParam("skip") @DefaultValue("0") int skip) {
-
-        try (Dao<Cart> dao = createDao()) {
-
-            return Response.ok().entity(dao.list(size, skip)).build();
-        }
-    }
-
-    // gauti full list
-    @GET
-    @Path("/{id}/f")
-    public Response getFull(@PathParam("id") int id) {
-
-        HttpSession session = servletRequest.getSession();
-        if (session.getAttribute("user") == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
-        try (Dao<Cart> dao = createDao()) {
-            Cart entity = dao.read(id, Cart.GRAPH_CART_LINES);
-
-            if (entity == null)
-                return Response.status(Response.Status.NOT_FOUND).build();
-
-            return Response.ok(entity).build();
-        }
+        return Response.ok(sessionCart).build();
     }
 
     // gauti cart is session, jei session neturi cart - sukurti
     @GET
     @Path("/getsessioncart")
-    public Response getCart() {
+    public Response getSessionCart() {
 
         HttpSession session = servletRequest.getSession();
         Object obj = session.getAttribute("cart");
@@ -205,6 +135,8 @@ public class CartService extends BaseService<Cart> {
             }
         }
 
+        keepUserCartInDatabase();
+
         return Response.ok(cart).build();
     }
 
@@ -233,6 +165,85 @@ public class CartService extends BaseService<Cart> {
             }
         }
 
+        keepUserCartInDatabase();
+
         return Response.ok(cart).build();
+    }
+
+    @AccessRoles({Role.USER, Role.ADMIN})
+    @PUT
+    @Path("/synchronize")
+    public Response synchronizeCarts() {
+
+        HttpSession session = servletRequest.getSession();
+
+        Object obj = session.getAttribute("cart");
+        Cart sessionCart;
+        if (obj instanceof Cart) {
+            sessionCart = (Cart) obj;
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        try (Dao<Cart> cartDao = createDao()) {
+            Cart userCart = cartDao.read(user.getId(), Cart.GRAPH_CART_LINES);
+
+            if (userCart != null) {
+
+                for (CartLine sessionCartLine : sessionCart.getCartLines()) {
+                    userCart.setQtyIfHasProductOrAddItemIfProductIsNew(sessionCartLine);
+                }
+            }
+
+            cartDao.update(userCart);
+            session.setAttribute("cart", userCart);
+        }
+
+
+        // todo ?? ar galima šitaip kreiptis į meodą kuris skirtas aptarnauti request užklausas
+//        keepUserCartInDatabase();
+        return Response.ok(sessionCart).build();
+    }
+
+    //    @AccessRoles({Role.USER, Role.ADMIN})
+    @PUT
+    @Path("/keepusercart")
+    public Response keepUserCartInDatabase() {
+
+        HttpSession session = servletRequest.getSession();
+
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        Object obj = session.getAttribute("cart");
+        Cart sessionCart;
+        if (obj instanceof Cart) {
+            sessionCart = (Cart) obj;
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        try (Dao<Cart> cartDao = createDao()) {
+
+            final Cart userCart = cartDao.read(user.getId(), Cart.GRAPH_CART_LINES);
+            if (userCart.getCartLines() == null) {
+                userCart.setCartLines(new LinkedHashSet<>());
+            } else {
+                userCart.getCartLines().clear();
+            }
+
+            userCart.getCartLines().addAll(sessionCart.getCartLines());
+            userCart.getCartLines().forEach(x -> x.setCart(userCart));
+            userCart.setTotal(sessionCart.getTotal());
+            cartDao.update(userCart);
+            return Response.ok(userCart).build();
+        }
     }
 }
