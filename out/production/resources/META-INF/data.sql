@@ -22,6 +22,10 @@ insert into products (name, price, image) values ('Porsche Panamera', 140000, 'h
 # testavimui password = username
 insert into users (username, role, secret) values ('admin@gmail.com', 'admin', '$2a$10$GovzvMHKM2X7aSUGQN/8TuG6gcKm9pxltuUWJajjX2ZYpxXCNNfaa');
 insert into carts (user_id, total) values (1, 0);
+
+# insert into orders (date, user_id, total) values ('2019-05-01', 1, 2000000);
+# insert into order_lines (order_id, product_id, qty, price) values (1, 1, 2, 1000000);
+
 # insert into cart_lines (cart_id, product_id, qty) values (1, 1, 10);
 # insert into cart_lines (cart_id, product_id, qty) values (1, 2, 10);
 # insert into cart_lines (cart_id, product_id, qty) values (1, 3, 10);

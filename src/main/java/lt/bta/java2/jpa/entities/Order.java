@@ -8,7 +8,12 @@ import java.util.Set;
 @Entity(name = "orders")
 @NamedEntityGraph(
         name = Order.GRAPH_ORDER_LINES,
-        attributeNodes = @NamedAttributeNode(value = "orderLines"))
+        attributeNodes =
+                {
+                        @NamedAttributeNode(value = "user"),
+                        @NamedAttributeNode(value = "orderLines")
+                }
+)
 public class Order {
 
     public static final String GRAPH_ORDER_LINES = "graph.order.lines";
@@ -19,7 +24,7 @@ public class Order {
 
     private LocalDate date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
     private BigDecimal total;

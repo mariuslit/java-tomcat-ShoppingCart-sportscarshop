@@ -2,16 +2,18 @@ neveikia pirmoji sinchronizacija
 sutvarkyti servisus palikti CartServise ištrinti MarServise
 sukurti new user
 
-
 patikrinti:
     veiksmu eiliškumas kai
     new user
         sukuriamas user
         sukuriamas naujas krepselis db
-todo
         sinchronizacija: issaugomos prekes session cart -> db user cart
 
-
+    kokią technologiją verta paminėti CV
+todo
+    CV
+        Spring
+        Jersey yra RESTful implementacija
 
 
 

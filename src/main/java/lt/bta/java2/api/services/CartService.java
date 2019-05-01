@@ -37,6 +37,7 @@ public class CartService extends BaseService<Cart> {
     // CRUD
 
     // gauti cart is session, jei session neturi cart - sukurti
+//    @AccessRoles({Role.USER, Role.ADMIN})
     @GET
     @Path("/getsessioncart")
     public Response getSessionCart() {
@@ -48,7 +49,6 @@ public class CartService extends BaseService<Cart> {
             cart = (Cart) obj;
         } else {
             cart = new Cart();
-//            cart.setTotal(BigDecimal.ZERO);
             cart.setTotal(BigDecimal.ZERO);
             session.setAttribute("cart", cart);
         }
@@ -56,7 +56,6 @@ public class CartService extends BaseService<Cart> {
     }
 
     // add cart line in session
-//    @AccessRoles({Role.USER, Role.ADMIN})
     @POST
     @Path("/jamam")
     public Response addCartLine(AddCartLineRequest addCartLineRequest) {
@@ -95,14 +94,12 @@ public class CartService extends BaseService<Cart> {
             sessionCart.getCartLines().add(cartLine);
         }
 
-        // todo ?? ar teisinga šitaip kreiptis į meodą
-        //  kuris skirtas aptarnauti request užklausas
         keepUserCartInDatabase();
-
         return Response.ok(sessionCart).build();
     }
 
     // update cart line in session
+//    @AccessRoles({Role.USER})
     @PUT
     @Path("/updateCartLine/{id}/{qty}")
     public Response updateCartLine(@PathParam("id") int id, @PathParam("qty") int qty) {
@@ -131,6 +128,7 @@ public class CartService extends BaseService<Cart> {
     }
 
     // delete cart line in session
+//    @AccessRoles({Role.USER})
     @DELETE
     @Path("/deleteCartLine/{id}")
     public Response deleteCart(@PathParam("id") int id) {
@@ -156,11 +154,10 @@ public class CartService extends BaseService<Cart> {
         }
 
         keepUserCartInDatabase();
-
         return Response.ok(cart).build();
     }
 
-//    @AccessRoles({Role.USER, Role.ADMIN})
+//    @AccessRoles({Role.USER})
     @PUT
     @Path("/synchronize")
     public Response synchronizeCarts() {
@@ -186,6 +183,7 @@ public class CartService extends BaseService<Cart> {
             if (userCart != null) {
 
                 for (CartLine sessionCartLine : sessionCart.getCartLines()) {
+
                     userCart.setQtyIfHasProductOrAddItemIfProductIsNew(sessionCartLine);
                 }
             }
@@ -193,14 +191,20 @@ public class CartService extends BaseService<Cart> {
             cartDao.update(userCart);
             session.setAttribute("cart", userCart);
         }
+
         keepUserCartInDatabase();
         return Response.ok(sessionCart).build();
     }
 
-    //    @AccessRoles({Role.USER, Role.ADMIN})
+//    @AccessRoles({Role.USER})
     @PUT
     @Path("/keepusercart")
-    public Response keepUserCartInDatabase() {
+    public Response keepUserCart() {
+        return keepUserCartInDatabase();
+    }
+
+    // krepselio saugojimas DB
+    private Response keepUserCartInDatabase() {
 
         HttpSession session = servletRequest.getSession();
 

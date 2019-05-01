@@ -65,15 +65,18 @@
 
     <ul class="nav justify-content-center">
         <li class="nav-item">
+            <a class="nav-link" href="#" id="mar-adminButton">Admin</a>
+        </li>
+        <li class="nav-item">
             <a href="#" class="nav-link btn btn-info btn-sm" id="mar-showCart">
                 <span class="glyphicon glyphicon-shopping-cart"></span> Your Shopping Cart
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#" id="mar-signIn">Sign In</a>
+            <a class="nav-link" href="#" id="mar-signInButton">Sign In</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#" id="mar-signOut">Sign Out</a>
+            <a class="nav-link" href="#" id="mar-signOutButton">Sign Out</a>
         </li>
         <li class="nav-item">
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true" id="mar-loggedUserName">User:
@@ -117,7 +120,7 @@
     </table>
 </div>
 
-<!--   2 CART VIEW  -->
+<!--   CART VIEW  -->
 <div class="container" id="mar-cartView">
     <div class="nav justify-content-center">
         <h3>Your Shopping Cart</h3>
@@ -156,12 +159,46 @@
     </table>
 </div>
 
-<!--   3 ORDER VIEW  -->
-<div class="modal" tabindex="-1" role="dialog" id="mar-orderModalView">
+<!--   ORDER LIST VIEW  -->
+<div class="modal" tabindex="-1" role="dialog" id="mar-orderListModalView">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"><span class="font-weight-bold">Order</span></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover table-condensed">
+                    <thead>
+                    <tr>
+                        <th style="width:7%">Id</th>
+                        <th style="width:25%">Date</th>
+                        <th style="width:35%">User</th>
+                        <th style="width:25%" class="text-right">Total</th>
+                        <th style="width:8%"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="mar-orderListViewTbody">
+                    <!-- add products here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-primary" data-dismiss="modal"> OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--   ORDER VIEW  -->
+<div class="modal" tabindex="-1" role="dialog" id="mar-orderModalView">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span class="font-weight-bold" id="mar-orderUserName">Order</span></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -177,7 +214,7 @@
                     </tr>
                     </thead>
 
-                    <tbody id="mar-orderListTbody">
+                    <tbody id="mar-orderViewTbody">
                     <!-- add products here -->
                     </tbody>
                 </table>
@@ -192,6 +229,7 @@
         </div>
     </div>
 </div>
+
 <!--   SCRIPT FILES  -->
 <div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>

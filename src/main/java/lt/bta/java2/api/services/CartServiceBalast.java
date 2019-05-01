@@ -15,10 +15,11 @@ import java.util.HashSet;
 import java.util.Optional;
 
 /**
- * Cart operacijų servisas (be autorizaciju)
+ * Cart operacijų servisas
+ * cia laikomas kodo balastas kuris gali buti reikaliingas tolesniam cat vystymui
  */
-@Path("/cart2")
-public class CartService2 extends BaseService<Cart> {
+@Path("/cart-balast")
+public class CartServiceBalast extends BaseService<Cart> {
 
     // reikalaujama autorizacijos
     @Context

@@ -15,9 +15,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 /**
- * Cart operacijų servisas
+ * Order operacijų servisas
  */
 @Path("/order")
 public class OrderService extends BaseService<Order> {
@@ -33,7 +34,7 @@ public class OrderService extends BaseService<Order> {
 
 
     // add cart line in session
-//    @AccessRoles({Role.USER})
+    @AccessRoles({Role.USER})
     @POST
     @Path("/buy")
     public Response buy() {
@@ -76,4 +77,33 @@ public class OrderService extends BaseService<Order> {
         return Response.ok(order).build();
     }
 
+    @AccessRoles({Role.ADMIN})
+    @GET
+    @Path("/getorder/{id}")
+    public Response getOrder(@PathParam("id") int id) {
+
+        try (Dao<Order> orderDao = createDao()) {
+            Order order = orderDao.read(id, Order.GRAPH_ORDER_LINES);
+
+            if (order == null) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok(order).build();
+        }
+    }
+
+    @AccessRoles({Role.ADMIN})
+    @GET
+    @Path("/getorderlist")
+    public Response getOrderList() {
+
+        try (Dao<Order> orderDao = createDao()) {
+            List<Order> orderList = orderDao.listAll();
+
+            if (orderList == null) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok(orderList).build();
+        }
+    }
 }

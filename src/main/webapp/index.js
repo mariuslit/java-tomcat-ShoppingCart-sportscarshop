@@ -7,8 +7,9 @@ $(function () {
     printProducts(skip, rowsPerPage);
 
     $('.mar-invisible').hide();
-    $('#mar-signOut').hide();
+    $('#mar-signOutButton').hide();
     $('#mar-cartView').hide();
+    $('#mar-adminButton').hide();
 
     // [<<]
     $('#prev').click(function () {
@@ -44,7 +45,7 @@ $(function () {
     });
 
     // [Sign In]
-    $('#mar-signIn').click(function () {
+    $('#mar-signInButton').click(function () {
         $('#mar-loginModal').modal('show');
     });
     // [Sign In - Login button]
@@ -57,8 +58,12 @@ $(function () {
     });
 
     // [Sign Out]
-    $('#mar-signOut').click(function () {
+    $('#mar-signOutButton').click(function () {
         logout();
+    });
+    // [Admin]
+    $('#mar-adminButton').click(function () {
+        printOrderList();
     });
 });
 
@@ -108,7 +113,7 @@ function bildHtmlProductsRows(products, rowsPerPage) {
         html += ' <td>' + products[i].name + '</td>';
         html += ' <td class="text-right">' + products[i].price.toLocaleString() + '</td>';
         html += ' <td class="text-right">';
-        html += '  <a href="#" class="nav-link btn btn-info btn-sm ml-add-krepselisX" ' +
+        html += '  <a href="#" class="nav-link btn btn-info btn-sm" ' +
             'onclick="jamam(' + products[i].id + ')">';
         html += '   <span class="glyphicon glyphicon-shopping-cart"></span> Add to Cart</a>';
         html += ' </td>';
@@ -120,12 +125,14 @@ function bildHtmlProductsRows(products, rowsPerPage) {
 // CART ----------------------------------------------------------------------------------------------------------------
 function jamam(productId) {
 
+    var token = window.localStorage.token;
     // dedama į 1 krepseli
     $.ajax({
         url: 'api/cart/jamam',
         method: 'POST',
         dataType: 'json',
         contentType: 'application/json',
+        headers: {Authorization: "Bearer " + token},
         data: JSON.stringify({
             id: productId,
             qty: 1
@@ -252,10 +259,17 @@ function login(username, password) {
 
         window.localStorage.token = data.token;
 
+        console.log('data.role=' + data.role);
+        console.log('data.token=' + data.token);
+
         synchronizeCarts(username);
 
-        $('#mar-signIn').hide();
-        $('#mar-signOut').show();
+        if (data.role === "admin") {
+            $('#mar-adminButton').show();
+        }
+
+        $('#mar-signInButton').hide();
+        $('#mar-signOutButton').show();
         $('#mar-loginModal').modal('hide');
         $('#mar-loggedUserName').text('User: ' + username);
 
@@ -286,8 +300,8 @@ function newUser(username, password) {
 
         synchronizeCarts(username);
 
-        $('#mar-signIn').hide();
-        $('#mar-signOut').show();
+        $('#mar-signInButton').hide();
+        $('#mar-signOutButton').show();
         $('#mar-loginModal').modal('hide');
         $('#mar-loggedUserName').text('New User: ' + username);
 
@@ -309,8 +323,11 @@ function logout() {
     }).done(function () {
         console.log('IŠSILOGINTA');
 
-        $('#mar-signOut').hide();
-        $('#mar-signIn').show();
+        delete window.localStorage.token;
+
+        $('#mar-adminButton').hide();
+        $('#mar-signOutButton').hide();
+        $('#mar-signInButton').show();
         $('#mar-loggedUserName').text("User: Guest");
 
     }).fail(function () {
@@ -357,16 +374,15 @@ function keepUserCartInDatabase() {
 
 function buy() {
 
-    // $.ajax({
-    //     url: 'api/order/buy',
-    //     method: 'GET',
-    //     dataType: 'json'
+    var token = window.localStorage.token;
+
     $.ajax({
         url: 'api/order/buy',
         method: 'POST',
         dataType: 'json',
         Accept: 'application/json',
         contentType: 'application/json',
+        headers: {Authorization: "Bearer " + token},
         data: JSON.stringify({
             // username: "ok",
             // password: "ok"
@@ -375,7 +391,6 @@ function buy() {
         console.log('APMOKĖTA');
         console.log('orderLinesSize=' + order.orderLines.length);
         printOrder(order);
-        $('#mar-orderModalView').modal('show');
 
     }).fail(function () {
         console.log('NE APMOKĖTA');
@@ -383,7 +398,72 @@ function buy() {
     });
 }
 
-function printOrder(order) {
+// ORDER LIST ----------------------------------------------------------------------------------------------------------
+function printOrderList() {
+
+    var token = window.localStorage.token;
+
+    $.ajax({
+        url: 'api/order/getorderlist',
+        method: 'GET',
+        dataType: 'json',
+        headers: {Authorization: "Bearer " + token}
+    }).done(function (orderList) {
+        console.log("ORDER LIST ATSPAUSDINTA");
+        bildHtmlOrderListRows(orderList);
+    }).fail(function () {
+        console.log("ORDER LIST NEATSPAUSDINTA");
+    });
+}
+
+function bildHtmlOrderListRows(orderList) {
+
+    var html = '';
+    for (var i = 0; i < orderList.length; i++) {
+
+        html += addHtmlOrderListRow(orderList[i]);
+    }
+
+    $('#mar-orderListViewTbody').html(html);
+    $('#mar-orderListModalView').modal('show');
+}
+
+function addHtmlOrderListRow(order) {
+
+    console.log("order.user=" + order.user.username);
+    var html = '';
+    html += '<tr>';
+    html += ' <td data-th="Id"><h5 class="nomargin">' + order.id + '</h5></td>';
+    html += ' <td data-th="Date">' + order.date.toLocaleString() + '</td>';
+    html += ' <td data-th="User">' + order.user.username + '</td>';
+    html += ' <td data-th="Total" class="text-right">€ ' + order.total.toLocaleString() + '</td>';
+    html += ' <td data-th="" class="text-right">';
+    html += '  <a href="#" class="nav-link btn btn-info btn-sm" onclick="printOrder(' + order.id + ')">';
+    html += '   <span class="glyphicon glyphicon-shopping-cart"></span> Show</a>';
+    html += ' </td>';
+    html += '</tr>';
+    return html;
+}
+
+// ORDER ---------------------------------------------------------------------------------------------------------------
+function printOrder(orderId) {
+
+    var token = window.localStorage.token;
+
+    $.ajax({
+        url: 'api/order/getorder/' + orderId,
+        method: 'GET',
+        dataType: 'json',
+        headers: {Authorization: "Bearer " + token}
+    }).done(function (order) {
+        console.log("ORDER ATSPAUSDINTA");
+        bildHtmlOrderRows(order);
+    }).fail(function () {
+        console.log("ORDER NEATSPAUSDINTA");
+    });
+}
+
+function bildHtmlOrderRows(order) {
 
     var orderLines = order.orderLines;
 
@@ -393,9 +473,11 @@ function printOrder(order) {
         html += addHtmlOrderRow(orderLines[i].id, orderLines[i].qty, orderLines[i].product);
     }
 
-    $('#mar-orderListTbody').html(html);
+    $('#mar-orderViewTbody').html(html);
+    $('#mar-orderUserName').html('Order Qwner: user ' + order.user.username);
     $('#mar-orderDate').html(order.date.toLocaleString());
     $('#mar-orderTotal').html(order.total.toLocaleString());
+    $('#mar-orderModalView').modal('show');
 }
 
 function addHtmlOrderRow(cartLineId, cartLineQty, product) {
@@ -408,6 +490,5 @@ function addHtmlOrderRow(cartLineId, cartLineQty, product) {
     html += '</tr>';
     return html;
 }
-
 
 

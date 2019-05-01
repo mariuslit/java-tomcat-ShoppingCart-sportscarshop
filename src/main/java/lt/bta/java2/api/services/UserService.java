@@ -60,9 +60,6 @@ public class UserService {
     @Path("/newuser")
     public Response newUser(CredentialsRequest userRequest) {
 
-        // todo ?? kaip logiškai išskaidyti šiuos du veiksmus
-        //      ar kurti dvi atskiras užklausas iš front-end
-        //      ar palikti kaip čia
         // new user
         Dao<User> userDao = new Dao<>(User.class);
         List<User> users = userDao.findBy("username", userRequest.getUsername());
@@ -70,7 +67,6 @@ public class UserService {
         if (users.size() > 0) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-
         User user = new User();
         user.setUsername(userRequest.getUsername());
         user.setSecret(BCrypt.hashpw(userRequest.getPassword(), BCrypt.gensalt()));
@@ -88,9 +84,9 @@ public class UserService {
         cartDao.create(cart);
 
         String token = JWTHelper.createJWT("my-app",
-                user.getId(), user.getUsername(), user.getRole(), 1000L * 60 * 5);//todo token
+                user.getId(), user.getUsername(), user.getRole(), 1000L * 60 * 60);
 
-        return Response.ok(Collections.singletonMap("login", "ok")).entity(Collections.singletonMap("token", token)).build();
+        return Response.ok(Collections.singletonMap("token", token)).build();
     }
 
     @POST
@@ -115,8 +111,12 @@ public class UserService {
         String token = JWTHelper.createJWT("my-app",
                 user.getId(), user.getUsername(), user.getRole(), 1000L * 60 * 60);
 
+        Map<String, String> map = new HashMap<>();
+        map.put("token", token);
+        map.put("role", user.getRole());
+        return Response.ok(map).build();
+//        return Response.ok(Collections.singletonMap("token", token)).build();
 //        return Response.ok(Collections.singletonMap("login", "ok")).build();
-        return Response.ok(Collections.singletonMap("login", "ok")).entity(Collections.singletonMap("token", token)).build();
     }
 
     @POST

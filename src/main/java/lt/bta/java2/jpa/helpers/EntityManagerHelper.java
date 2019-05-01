@@ -11,7 +11,7 @@ public class EntityManagerHelper {
 
     public static final String FETCH_GRAPH = "javax.persistence.fetchgraph";
     private static final EntityManagerFactory emf;
-    // sukuriamas tredų mapas kuris aptarnauja visas užklausas
+    // sukuriamas tredų mapa's (pulas) kuris aptarnauja visas užklausas
     private static final ThreadLocal<EntityManager> threadLocal;
 
     static {

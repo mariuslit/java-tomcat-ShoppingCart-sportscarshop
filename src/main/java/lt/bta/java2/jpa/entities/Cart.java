@@ -29,8 +29,8 @@ public class Cart {
 
     private BigDecimal total;
 
-
-    public void setQtyIfHasProductOrAddItemIfProductIsNew(CartLine sessionCartLine ) {
+    //ets quantity
+    public void setQtyIfHasProductOrAddItemIfProductIsNew(CartLine sessionCartLine) {
 
         for (CartLine userCartLine : this.cartLines) {
 

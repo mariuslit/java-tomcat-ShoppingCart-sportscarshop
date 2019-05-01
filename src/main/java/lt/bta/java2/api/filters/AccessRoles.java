@@ -10,7 +10,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Anotaciju interfeisas, leidimai Rolems ka nors daryyti
+ * Anotacijos interfeisas (aprasas), kur ir kaip gali buti naudojama
  */
 @NameBinding
 @Retention(RUNTIME)
