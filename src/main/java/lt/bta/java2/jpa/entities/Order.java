@@ -9,7 +9,7 @@ import java.util.Set;
 @NamedEntityGraph(
         name = Order.GRAPH_ORDER_LINES,
         attributeNodes =
-                {
+                { // todo ?? NamedEntityGraph
                         @NamedAttributeNode(value = "user"),
                         @NamedAttributeNode(value = "orderLines")
                 }
@@ -24,7 +24,7 @@ public class Order {
 
     private LocalDate date;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     private BigDecimal total;

@@ -2,12 +2,17 @@
 # App -> /api
 # OrdrService -> /order
 
-# CRUD
-
 # GET atspausdianami visi krepšeliai su prekėmis
 GET http://localhost:8080/sportscarshop/api/order/getorderlist
 Accept: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInVzZXJJZCI6MSwiZXhwIjoxNTU2Njk2NTMyfQ.2-HkjHCyAtddhO-VBBoL8CEO16bUA--rM3bNyGcyaaw
+
+###
+
+# GET atspausdianami visi krepšeliai su prekėmis
+GET http://localhost:8080/sportscarshop/api/order/getorder/2
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInVzZXJJZCI6MSwiZXhwIjoxNTU2NzAyNzcwfQ.7j_aTTjcAKUvvl3V76znjknLSYHFOurm4ydxo-bg-gY
 
 ###
 
