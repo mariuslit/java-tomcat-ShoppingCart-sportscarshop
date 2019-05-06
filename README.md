@@ -1,4 +1,4 @@
-# WEB APP - Sports Car Shop
+# JAVA WEB APP - Sports Car Shop
     
     What can do this app?
         Log In User, Create New User
@@ -17,7 +17,7 @@
                         MySql
     Front-end           JQuery, Bootstrap
     Soliutions:         RESTful API
-                        DAO/Entities
+                        DAO/Entities/Services
                                 
         
     
