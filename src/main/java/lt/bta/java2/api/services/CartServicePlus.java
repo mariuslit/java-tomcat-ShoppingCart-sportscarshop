@@ -19,7 +19,7 @@ import java.util.Optional;
  * cia laikomas kodo balastas kuris gali buti reikaliingas tolesniam cat vystymui
  */
 @Path("/cart-balast")
-public class CartServiceBalast extends BaseService<Cart> {
+public class CartServicePlus extends BaseService<Cart> {
 
     // reikalaujama autorizacijos
     @Context
