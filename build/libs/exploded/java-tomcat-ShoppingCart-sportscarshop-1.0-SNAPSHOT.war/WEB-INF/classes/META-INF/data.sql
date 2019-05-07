@@ -1,4 +1,4 @@
-insert into products (name, price, image) values ('1 ĄČĘĖĮŠŲŪŽ McLaren 570S', 200000, 'https://www.autocar.co.uk/sites/autocar.co.uk/files/styles/body-image/public/mclaren-570s.jpg?itok=Evd9Xkr5');
+insert into products (name, price, image) values ('1 McLaren 570S', 200000, 'https://www.autocar.co.uk/sites/autocar.co.uk/files/styles/body-image/public/mclaren-570s.jpg?itok=Evd9Xkr5');
 insert into products (name, price, image) values ('2 Ford Mustang', 68000, 'https://www.leithcars.com/assets/shared/CustomHTMLFiles/Responsive/MRP/Ford/2017/Mustang/images/2017-Ford-Mustang-01.jpg');
 insert into products (name, price, image) values ('3 Nissan GT-R', 100000, 'https://www.autocar.co.uk/sites/autocar.co.uk/files/styles/body-image/public/nissan-gt-r_0.jpg?itok=2N6jSgL0');
 insert into products (name, price, image) values ('4 Porsche 911 Carrera', 200000, 'https://www.autocar.co.uk/sites/autocar.co.uk/files/styles/body-image/public/911-road-3629a.jpg?itok=m6x23Go0');

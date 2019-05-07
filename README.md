@@ -1,26 +1,23 @@
 # JAVA WEB APP - Sports Car Shop
     
-    What can do this app?
+    What can this program do?
         Log In User, Create New User
-        Add products to cart
-        Edit Cart (Edit quantity/delete produkts)
+        Add products to Cart
+        Edit Cart (Edit quantity/delete products)
         Buy (User role)
         View Orders (Admin role)
     
-    Autentification:    Session, Token
-    Roles:              Admin role, User role
     Permissions:        User - Buy, Admin - view Orders   
+                        Roles: Admin role, User role
 
     Technologies:       
-    Back-end            Java web app
+    Back-end            Java Web App
                         Gradle/Tomcat/Hibernate
                         MySql
     Front-end           JQuery, Bootstrap
-    Soliutions:         RESTful API
-                        DAO/Entities/Services
-                                
-        
     
-    
-    
-    
+    Solutions:          
+        RESTful API, DAO CRUD, Entities, Services
+        Authentication: Session, Token
+
+

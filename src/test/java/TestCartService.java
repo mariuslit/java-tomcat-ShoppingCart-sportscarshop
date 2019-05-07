@@ -5,7 +5,7 @@ public class TestCartService {
     @Test
     public void testResponseStatus() {
 
-        // todo sukurti situacija kad veiktu sis testas
+        // TODO situation for this test
 //        Assert.assertEquals(cartService.getSessionCart(), Response.Status.OK);
     }
 }
