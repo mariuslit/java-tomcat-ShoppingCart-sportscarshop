@@ -9,7 +9,7 @@
         View Orders (Admin role)
         Roles / Permissions:    
             User - Buy, 
-            Admin - view Orders   
+            Admin - View Orders   
 
     Solutions:  
 	
